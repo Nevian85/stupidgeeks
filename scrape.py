@@ -78,3 +78,4 @@ def scanAndScrape():
 
 # Initializes the script
 scanAndScrape()
+

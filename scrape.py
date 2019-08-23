@@ -28,6 +28,9 @@ def scanAndScrape():
 	if query == "":
 		return
 
+	outfile = open("./games.csv", "a", newline='')
+	writer = csv.writer(outfile)
+
 	pc_url = 'https://www.pricecharting.com/search-products?type=videogames&q='+ str(query)
 	pc_soup = loadSoup(pc_url)
 	genre = pc_soup.find('td', attrs={'itemprop': 'genre'})
@@ -46,6 +49,7 @@ def scanAndScrape():
 			gs_pid = gs_url["href"].split("%2F")[-1]
 			formatted_gs_pid = f'1{gs_pid:0>7}'
 
+
 		if gs_url is not None and len(formatted_gs_pid) is 8:
 			gs_trade_url = 'https://www.gamestop.com/trade/details/?pid='+ str(formatted_gs_pid)
 			gs_soup = loadSoup(gs_trade_url)
@@ -60,16 +64,13 @@ def scanAndScrape():
 		print(title,platform,query,genre,loose_price,cib_price,nib_price,gs_name,formatted_gs_pid,gs_trade)
 		print("")
 		GameData = ["=\"" + query + "\"",title,platform,genre,loose_price,cib_price,nib_price,gs_name,formatted_gs_pid,gs_trade]
-
-		outfile = open("./games.csv", "a", newline='')
-		writer = csv.writer(outfile)
 		writer.writerow(GameData)
 	else:
 		print("Unknown UPC")
-		outfile = open("./games.csv", "a", newline='')
-		writer = csv.writer(outfile)
+		print("")
 		writer.writerow(["Uknown UPC"])
+	
+	outfile.flush()
 	scanAndScrape()
 
-# Initializes the script
 scanAndScrape()
